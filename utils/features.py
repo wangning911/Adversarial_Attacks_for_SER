@@ -68,7 +68,7 @@ def calculate_logmel(audio_path, sample_rate, feature_extractor):
 
 def read_development_meta(meta_csv):
     
-    df = pd.read_csv(meta_csv, sep='\t')
+    df = pd.read_csv(meta_csv)
     df = pd.DataFrame(df)
     
     audio_names = []
@@ -77,7 +77,7 @@ def read_development_meta(meta_csv):
     for row in df.iterrows():
         
         audio_name = row[1]['filename']
-        emotion_label = row[1]['emotionlabel']
+        emotion_label = row[1]['emo']
 
         audio_names.append(audio_name)
         emotion_labels.append(emotion_label)
@@ -104,7 +104,8 @@ def calculate_features(args):
     audio_dir = dataset_dir
     
     if data_type == 'development':
-        meta_csv = os.path.join(dataset_dir, 'zhao_code', 'demos_data', 'meta.csv')
+        # meta_csv = os.path.join(dataset_dir, 'zhao_code', 'demos_data', 'meta.csv')
+        meta_csv = "/home/nwang/emotion/dataset/DEMOS/meta.csv"
 
     hdf5_path = os.path.join(workspace, 'features', 'logmel', '{}.h5'.format(data_type))
 
@@ -135,7 +136,7 @@ def calculate_features(args):
 
     for (n, audio_name) in enumerate(audio_names):
         
-        print(n, audio_name)
+        # print(n, audio_name)
         
         # Calculate feature
         audio_path = os.path.join(audio_dir, audio_name)
@@ -146,11 +147,11 @@ def calculate_features(args):
                                     feature_extractor=feature_extractor)
         '''(seq_len, mel_bins)'''
         
-        print(feature.shape)
+        # print(feature.shape)
 
         # repeat
         if len(feature) < seq_len:
-            stack_n1 = seq_len / len(feature) - 1
+            stack_n1 = seq_len // len(feature) - 1
             stack_n2 = seq_len % len(feature)
             feature_temp = feature
             for n1 in range(0, stack_n1):
@@ -185,8 +186,8 @@ def calculate_features(args):
 if __name__ == '__main__':
 
     # this part is for debugging
-    DATASET_DIR = "/home/zhao/NAS/data_work/Zhao/wav_DEMoS"
-    WORKSPACE = "/home/zhao/NAS/data_work/Zhao/wav_DEMoS/zhao_code/pub_demos_cnn"
+    DATASET_DIR = "/home/nwang/emotion/dataset/DEMOS"
+    WORKSPACE = "/home/nwang/Adversarial_Attacks_for_SER"
     DEV_SUBTASK_A_DIR = "development-subtaskA"
     parser = argparse.ArgumentParser(description='Example of parser. ')
 

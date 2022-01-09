@@ -1,9 +1,9 @@
 #!/bin/bash
 # You need to modify this path
-DATASET_DIR="/home/renzhao/demos/demos4"
+DATASET_DIR="/home/nwang/emotion/dataset/DEMOS"
 
 # You need to modify this path as your workspace
-WORKSPACE="/home/renzhao/demos/demos4/pub_demos_cnn"
+WORKSPACE="/home/nwang/Adversarial_Attacks_for_SER"
 
 DEV_SUBTASK_A_DIR="demos_data"
 

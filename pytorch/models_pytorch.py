@@ -72,7 +72,7 @@ class FGSMAttack(object):
         """
         self.model = model
         self.epsilon = epsilon
-	self.alpha = alpha
+        self.alpha = alpha
 
     def perturb(self, X_nat, y, epsilons=None, cuda=False):
         """
@@ -172,7 +172,7 @@ class BaselineCnn(nn.Module):
         #x = F.max_pool2d(x, kernel_size=x.shape[2:])
         #x = x.view(x.shape[0:2])
 
-	x = x.view(x.size(0), x.size(1) * x.size(2) * x.size(3))
+        x = x.view(x.size(0), x.size(1) * x.size(2) * x.size(3))
 
         x = F.log_softmax(self.fc1(x), dim=-1)
 
@@ -457,8 +457,7 @@ class ResNet(nn.Module):
         x = self.avgpool(x)
         x = torch.flatten(x, 1)
         x = self.fc(x)
-	
-	x = F.log_softmax(x, dim=-1)
+        x = F.log_softmax(x, dim=-1)
 
         return x
 

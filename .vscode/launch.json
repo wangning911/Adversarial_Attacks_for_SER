@@ -1,0 +1,26 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "train model",
+            "type": "python",
+            "request": "launch",
+            "program": "/home/nwang/Adversarial_Attacks_for_SER/pytorch/main_pytorch.py",
+            "console": "integratedTerminal",
+            "env": {
+                "PYTHONPATH" : "/home/nwang/Adversarial_Attacks_for_SER/utils"
+            },
+            "args": [
+                "train",
+                "--dataset_dir=/home/nwang/emotion/dataset/DEMOS",
+                "--workspace=/home/nwang/Adversarial_Attacks_for_SER",
+                "--epsilon_value=0.1",
+                "--alpha_value=0.1",
+                "--cuda"
+            ]
+        }
+    ]
+}

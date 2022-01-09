@@ -1,6 +1,6 @@
 import numpy as np
 import soundfile
-import librosa
+# import librosa
 import os
 from sklearn import metrics
 import logging
@@ -9,6 +9,7 @@ import matplotlib.ticker as ticker
 import torch
 
 import config
+import librosa
 
 
 def create_folder(fd):
@@ -109,16 +110,16 @@ def calculate_accuracy(target, predict, classes_num, average=None):
         if target[n] == predict[n]:
             correctness[target[n]] += 1
 
-    accuracy = correctness / total
+    accuracy = sum(correctness) / sum(total)
 
-    if average is None:
-        return accuracy
+    # if average is None:
+    return accuracy
         
-    elif average == 'macro':
-        return np.mean(accuracy)
+    # elif average == 'macro':
+    #     return np.mean(accuracy)
         
-    else:
-        raise Exception('Incorrect average!')
+    # else:
+    #     raise Exception('Incorrect average!')
 
 
 def calculate_confusion_matrix(target, predict, classes_num):

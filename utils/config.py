@@ -11,6 +11,8 @@ seq_len = 373 #344
 mel_bins = 64 #64 #257
 
 labels = ['anger', 'disgust', 'fear', 'guilt', 'happiness', 'sadness', 'surprise']
+ita_labels = ['rab','dis','pau','col','gio','tri','sor']
 
+ita_to_eng= {it: en for it, en in zip(ita_labels,labels)}
 lb_to_ix = {lb: ix for ix, lb in enumerate(labels)}
 ix_to_lb = {ix: lb for ix, lb in enumerate(labels)}

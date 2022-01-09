@@ -28,7 +28,7 @@ class DataGenerator(object):
         self.random_state = np.random.RandomState(seed)
         self.validate_random_state = np.random.RandomState(0)
         lb_to_ix = config.lb_to_ix
-
+        ita_to_eng = config.ita_to_eng
         # Load data
         load_time = time.time()
         hf = h5py.File(hdf5_path, 'r')
@@ -36,7 +36,7 @@ class DataGenerator(object):
         self.audio_names = np.array([s.decode() for s in hf['filename'][:]])
         self.x = hf['feature'][:]
         self.emotion_labels = [s.decode() for s in hf['emotion_label'][:]]
-        self.y = np.array([lb_to_ix[lb] for lb in self.emotion_labels])
+        self.y = np.array([lb_to_ix[ita_to_eng[lb]] for lb in self.emotion_labels])
 
         hf.close()
         logging.info('Loading data time: {:.3f} s'.format(
@@ -90,7 +90,7 @@ class DataGenerator(object):
         audio_indexes = []
 
         for li in lis:
-            audio_name = li[0]
+            audio_name = li[0].split(',')[3]
 
             if audio_name in self.audio_names:
                 audio_index = np.where(self.audio_names == audio_name)[0][0]
@@ -107,7 +107,7 @@ class DataGenerator(object):
         """
 
         batch_size = self.batch_size
-        audio_indexes = np.array(self.train_audio_indexes)
+        audio_indexes = np.array(self.train_audio_indexes,dtype=int)
         audios_num = len(audio_indexes)
 
         self.random_state.shuffle(audio_indexes)
@@ -127,7 +127,6 @@ class DataGenerator(object):
             pointer += batch_size
 
             iteration += 1
-
             batch_x = self.x[batch_audio_indexes]
             batch_y = self.y[batch_audio_indexes]
 

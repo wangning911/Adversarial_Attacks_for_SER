@@ -145,22 +145,22 @@ def forward(model, model_adv, generate_func, cuda, return_target):
         if return_target:
             targets.append(batch_y)
 
-    dict = {}
+        dict = {}
 
-    outputs = np.concatenate(outputs, axis=0)
-    dict['output'] = outputs
-    
-    audio_names = np.concatenate(audio_names, axis=0)
-    dict['audio_name'] = audio_names
-
-    outputs_adv = np.concatenate(outputs_adv, axis=0)
-    dict['output_adv'] = outputs_adv
-    
-    if return_target:
-        targets = np.concatenate(targets, axis=0)
-        dict['target'] = targets
+        outputs = np.concatenate(outputs, axis=0)
+        dict['output'] = outputs
         
-    return dict
+        audio_names = np.concatenate(audio_names, axis=0)
+        dict['audio_name'] = audio_names
+
+        outputs_adv = np.concatenate(outputs_adv, axis=0)
+        dict['output_adv'] = outputs_adv
+        
+        if return_target:
+            targets = np.concatenate(targets, axis=0)
+            dict['target'] = targets
+            
+        return dict
 
 
 
@@ -168,7 +168,7 @@ def train(args):
 
     # Arugments & parameters
     dataset_dir = args.dataset_dir
-    subdir = args.subdir
+    # subdir = args.subdir
     workspace = args.workspace
     feature_type = args.feature_type
     filename = args.filename
@@ -181,20 +181,21 @@ def train(args):
 
     labels = config.labels
 
-    if 'mobile' in subdir:
-        devices = ['a', 'b', 'c']
-    else:
-        devices = ['a']
+    # #ign mobile
+    # if 'mobile' in subdir:
+    #     devices = ['a', 'b', 'c']
+    # else:
+    #     devices = ['a']
 
     classes_num = len(labels)
 
-    # Paths
-    if mini_data:
-        hdf5_path = os.path.join(workspace, 'features', feature_type, 'mini_development.h5')
-    else:
-        hdf5_path = os.path.join(workspace, 'features', feature_type, 'development.h5')
+    # Paths ign
+    # if mini_data:
+    #     hdf5_path = os.path.join(workspace, 'features', feature_type, 'mini_development.h5')
+    # else:
+    #     hdf5_path = os.path.join(workspace, 'features', feature_type, 'development.h5')
 
-    if validation:
+    if validation: 
         
         dev_train_csv = os.path.join(dataset_dir, subdir, 'evaluation_setup',
                                      'fold{}_train.txt'.format(holdout_fold))
@@ -206,13 +207,15 @@ def train(args):
                                   'holdout_fold={}'.format(holdout_fold), 'epsilon={}-alpha={}'.format(epsilon_value, alpha_value))
                                         
     else:
-        dev_train_csv = os.path.join(dataset_dir, subdir, 'evaluation_setup',
-                                     'fold{}_traindevel.txt'.format(holdout_fold))
+        # dev_train_csv = os.path.join(dataset_dir, subdir, 'evaluation_setup',
+        #                              'fold{}_traindevel.txt'.format(holdout_fold))  
+        dev_train_csv = "/home/nwang/emotion/train_dataset.csv"
 
-        dev_validate_csv = os.path.join(dataset_dir, subdir, 'evaluation_setup',
-                                        'fold{}_test.txt'.format(holdout_fold))
+        # dev_validate_csv = os.path.join(dataset_dir, subdir, 'evaluation_setup',
+        #                                 'fold{}_test.txt'.format(holdout_fold))
+        dev_validate_csv = "/home/nwang/emotion/dev_dataset.csv"
         
-        models_dir = os.path.join(workspace, 'models', subdir, filename,
+        models_dir = os.path.join(workspace, 'models', filename,
                                   'full_train', 'epsilon={}-alpha={}'.format(epsilon_value, alpha_value))
 
     create_folder(models_dir)
@@ -225,6 +228,7 @@ def train(args):
         model.cuda()
 
     # Data generator
+    hdf5_path = os.path.join(workspace, 'features', feature_type, 'development.h5')
     generator = DataGenerator(hdf5_path=hdf5_path,
                               batch_size=batch_size,
                               dev_train_csv=dev_train_csv,
@@ -248,7 +252,7 @@ def train(args):
 					 model_adv=adversary,
                                          generator=generator,
                                          data_type='train',
-                                         devices=devices,
+                                         devices=['a'],
                                          max_iteration=None,
                                          cuda=cuda)
 
@@ -259,7 +263,7 @@ def train(args):
 					model_adv=adversary,
                                         generator=generator,
                                         data_type='validate',
-                                        devices=devices,
+                                        devices=['a'],
                                         max_iteration=None,
                                         cuda=cuda)
 
@@ -416,7 +420,7 @@ def inference_validation_data(args):
 
         outputs = dict['output']    # (audios_num, classes_num)
         targets = dict['target']    # (audios_num, classes_num)
-  	outputs_adv = dict['output_adv']    # (audios_num, classes_num)
+        outputs_adv = dict['output_adv']    # (audios_num, classes_num)
 
         predictions = np.argmax(outputs, axis=-1)
         predictions_adv = np.argmax(outputs_adv, axis=-1)
@@ -467,7 +471,7 @@ if __name__ == '__main__':
 
     parser_train = subparsers.add_parser('train')
     parser_train.add_argument('--dataset_dir', type=str, required=True)
-    parser_train.add_argument('--subdir', type=str, required=True)
+    # parser_train.add_argument('--subdir', type=str, required=True)
     parser_train.add_argument('--workspace', type=str, required=True)
     parser_train.add_argument('--feature_type', type=str, default='logmel')
     parser_train.add_argument('--validation', action='store_true', default=False)
@@ -480,14 +484,14 @@ if __name__ == '__main__':
     
     parser_inference_validation_data = subparsers.add_parser('inference_validation_data')
     parser_inference_validation_data.add_argument('--dataset_dir', type=str, required=True)
-    parser_inference_validation_data.add_argument('--subdir', type=str, required=True)
+    # parser_inference_validation_data.add_argument('--subdir', type=str, required=True)
     parser_inference_validation_data.add_argument('--workspace', type=str, required=True)
     parser_inference_validation_data.add_argument('--feature_type', type=str, default='logmel')
     parser_inference_validation_data.add_argument('--validation', action='store_true', default=False)
     parser_inference_validation_data.add_argument('--holdout_fold', type=int, required=True)
     parser_inference_validation_data.add_argument('--epsilon_value', type=float)
     parser_inference_validation_data.add_argument('--alpha_value', type=float)
-    parser_inference_validation_data.add_argument('--iteration', type=int, required=True)
+    # parser_inference_validation_data.add_argument('--iteration', type=int, required=True)
     parser_inference_validation_data.add_argument('--cuda', action='store_true', default=False)
 
 

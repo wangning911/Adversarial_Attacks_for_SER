@@ -6,7 +6,7 @@ Database： the Database of Elicited Mood in Speech (DEMoS)
 
 Task: seven-class classification
 
-# Preparation
+# Preparation ign
 channels:
   - pytorch
 dependencies:
